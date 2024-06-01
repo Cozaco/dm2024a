@@ -7,8 +7,11 @@
 rm(list = ls(all.names = TRUE)) # remove all objects
 gc(full = TRUE) # garbage collection
 
+install.packages("missForest")
 require("data.table")
 require("yaml")
+require("missForest")
+require("doParallel")
 
 #cargo la libreria
 # args <- c( "~/dm2024a" )
@@ -17,22 +20,22 @@ source( paste0( args[1] , "/src/lib/action_lib.r" ) )
 #------------------------------------------------------------------------------
 
 CorregirCampoMes <- function(pcampo, pmeses) {
-
+  
   tbl <- dataset[, list(
     "v1" = shift(get(pcampo), 1, type = "lag"),
     "v2" = shift(get(pcampo), 1, type = "lead")
   ),
   by = eval(envg$PARAM$dataset_metadata$entity_id)
   ]
-
+  
   tbl[, paste0(envg$PARAM$dataset_metadata$entity_id) := NULL]
   tbl[, promedio := rowMeans(tbl, na.rm = TRUE)]
-
+  
   dataset[
     ,
     paste0(pcampo) := ifelse(!(foto_mes %in% pmeses),
-      get(pcampo),
-      tbl$promedio
+                             get(pcampo),
+                             tbl$promedio
     )
   ]
 }
@@ -42,7 +45,7 @@ CorregirCampoMes <- function(pcampo, pmeses) {
 
 Corregir_EstadisticaClasica <- function(dataset) {
   cat( "inicio Corregir_EstadisticaClasica()\n")
-
+  
   CorregirCampoMes("thomebanking", c(201801, 202006))
   CorregirCampoMes("chomebanking_transacciones", c(201801, 201910, 202006))
   CorregirCampoMes("tcallcenter", c(201801, 201806, 202006))
@@ -55,11 +58,11 @@ Corregir_EstadisticaClasica <- function(dataset) {
   CorregirCampoMes("ccajas_depositos", c(201801, 202006))
   CorregirCampoMes("ccajas_extracciones", c(201801, 202006))
   CorregirCampoMes("ccajas_otras", c(201801, 202006))
-
+  
   CorregirCampoMes("ctarjeta_visa_debitos_automaticos", c(201904))
   CorregirCampoMes("mttarjeta_visa_debitos_automaticos", c(201904, 201905))
   CorregirCampoMes("Visa_mfinanciacion_limite", c(201904))
-
+  
   CorregirCampoMes("mrentabilidad", c(201905, 201910, 202006))
   CorregirCampoMes("mrentabilidad_annual", c(201905, 201910, 202006))
   CorregirCampoMes("mcomisiones", c(201905, 201910, 202006))
@@ -67,16 +70,16 @@ Corregir_EstadisticaClasica <- function(dataset) {
   CorregirCampoMes("mactivos_margen", c(201905, 201910, 202006))
   CorregirCampoMes("ccomisiones_otras", c(201905, 201910, 202006))
   CorregirCampoMes("mcomisiones_otras", c(201905, 201910, 202006))
-
+  
   CorregirCampoMes("ctarjeta_visa_descuentos", c(201910))
   CorregirCampoMes("ctarjeta_master_descuentos", c(201910))
   CorregirCampoMes("mtarjeta_visa_descuentos", c(201910))
   CorregirCampoMes("mtarjeta_master_descuentos", c(201910))
   CorregirCampoMes("ccajeros_propios_descuentos", c(201910))
   CorregirCampoMes("mcajeros_propios_descuentos", c(201910))
-
+  
   CorregirCampoMes("cliente_vip", c(201911))
-
+  
   CorregirCampoMes("active_quarter", c(202006))
   CorregirCampoMes("mcuentas_saldo", c(202006))
   CorregirCampoMes("ctarjeta_debito_transacciones", c(202006))
@@ -98,7 +101,7 @@ Corregir_EstadisticaClasica <- function(dataset) {
   CorregirCampoMes("catm_trx_other", c(202006))
   CorregirCampoMes("matm_other", c(202006))
   CorregirCampoMes("cmobile_app_trx", c(202006))
-
+  
   cat( "fin Corregir_EstadisticaClasica()\n")
 }
 #------------------------------------------------------------------------------
@@ -107,22 +110,22 @@ Corregir_MachineLearning <- function(dataset) {
   gc()
   cat( "inicio Corregir_MachineLearning()\n")
   # acomodo los errores del dataset
-
+  
   dataset[foto_mes == 201901, ctransferencias_recibidas := NA]
   dataset[foto_mes == 201901, mtransferencias_recibidas := NA]
-
+  
   dataset[foto_mes == 201902, ctransferencias_recibidas := NA]
   dataset[foto_mes == 201902, mtransferencias_recibidas := NA]
-
+  
   dataset[foto_mes == 201903, ctransferencias_recibidas := NA]
   dataset[foto_mes == 201903, mtransferencias_recibidas := NA]
-
+  
   dataset[foto_mes == 201904, ctransferencias_recibidas := NA]
   dataset[foto_mes == 201904, mtransferencias_recibidas := NA]
   dataset[foto_mes == 201904, ctarjeta_visa_debitos_automaticos := NA]
   dataset[foto_mes == 201904, mttarjeta_visa_debitos_automaticos := NA]
   dataset[foto_mes == 201904, Visa_mfinanciacion_limite := NA]
-
+  
   dataset[foto_mes == 201905, ctransferencias_recibidas := NA]
   dataset[foto_mes == 201905, mtransferencias_recibidas := NA]
   dataset[foto_mes == 201905, mrentabilidad := NA]
@@ -133,7 +136,7 @@ Corregir_MachineLearning <- function(dataset) {
   dataset[foto_mes == 201905, ctarjeta_visa_debitos_automaticos := NA]
   dataset[foto_mes == 201905, ccomisiones_otras := NA]
   dataset[foto_mes == 201905, mcomisiones_otras := NA]
-
+  
   dataset[foto_mes == 201910, mpasivos_margen := NA]
   dataset[foto_mes == 201910, mactivos_margen := NA]
   dataset[foto_mes == 201910, ccomisiones_otras := NA]
@@ -148,9 +151,9 @@ Corregir_MachineLearning <- function(dataset) {
   dataset[foto_mes == 201910, mtarjeta_master_descuentos := NA]
   dataset[foto_mes == 201910, ccajeros_propios_descuentos := NA]
   dataset[foto_mes == 201910, mcajeros_propios_descuentos := NA]
-
+  
   dataset[foto_mes == 202001, cliente_vip := NA]
-
+  
   dataset[foto_mes == 202006, active_quarter := NA]
   dataset[foto_mes == 202006, mrentabilidad := NA]
   dataset[foto_mes == 202006, mrentabilidad_annual := NA]
@@ -191,19 +194,38 @@ Corregir_MachineLearning <- function(dataset) {
   dataset[foto_mes == 202006, matm_other := NA]
   dataset[foto_mes == 202006, ctrx_quarter := NA]
   dataset[foto_mes == 202006, cmobile_app_trx := NA]
-
+  
   cat( "fin Corregir_MachineLearning()\n")
 }
 #------------------------------------------------------------------------------
 
-Corregir_MissForest_all <- function(dataset) {
+Corregir_MissForest <- function(dataset) {
   cat("inicio Corregir_MissForest()\n")
   
-  clase_ternaria <- dataset$clase_ternaria
-  dataset_to_impute <- dataset[, !names(dataset) %in% "clase_ternaria", with = FALSE]
-  dataset_imputed <- missForest(dataset_to_impute)
-  dataset[, !names(dataset) %in% "clase_ternaria", with = FALSE] <- dataset_imputed$ximp
-  dataset$clase_ternaria <- clase_ternaria
+  to_impute_variables <- c(
+    "ctrx_quarter",
+    "mpasivos_margen",
+    "mrentabilidad_annual",
+    "mactivos_margen",
+    "mtransferencias_recibidas",
+    "mtarjeta_visa_consumo",
+    "Visa_mfinanciacion_limite",
+    "chomebanking_transacciones",
+    "mrentabilidad"
+  )
+  
+  set.seed(100)
+  
+  variables_to_input_NA <- dataset[,..to_impute_variables]
+  
+  imputed_data <- missForest(sampled_rows,
+                             verbose = TRUE,
+                             maxiter = 10,
+                             ntree = 100,
+                             maxnodes = 5,
+                             parallelize = "forests")
+  
+  dataset[, (to_impute_variables) := imputed_data$ximp]
   
   cat("fin Corregir_MissForest()\n")
   
@@ -236,10 +258,10 @@ setorderv(dataset, envg$PARAM$dataset_metadata$primarykey)
 
 # corrijo los  < foto_mes, campo >  que fueron pisados con cero
 switch( envg$PARAM$metodo,
-  "MachineLearning"     = Corregir_MachineLearning(dataset),
-  "EstadisticaClasica"  = Corregir_EstadisticaClasica(dataset),
-  "Ninguno"             = cat("No se aplica ninguna correccion.\n"),
-  "MissForest"          = Corregir_MissForest_all(dataset),
+        "MachineLearning"     = Corregir_MachineLearning(dataset),
+        "EstadisticaClasica"  = Corregir_EstadisticaClasica(dataset),
+        "Ninguno"             = cat("No se aplica ninguna correccion.\n"),
+        "MissForest"          = Corregir_MissForest(dataset),
 )
 
 
@@ -248,16 +270,16 @@ switch( envg$PARAM$metodo,
 cat( "grabado del dataset\n")
 cat( "Iniciando grabado del dataset\n" )
 fwrite(dataset,
-  file = "dataset.csv.gz",
-  logical01 = TRUE,
-  sep = ","
+       file = "dataset.csv.gz",
+       logical01 = TRUE,
+       sep = ","
 )
 cat( "Finalizado grabado del dataset\n" )
 
 # copia la metadata sin modificar
 cat( "grabado metadata\n")
 write_yaml( envg$PARAM$dataset_metadata, 
-  file="dataset_metadata.yml" )
+            file="dataset_metadata.yml" )
 
 #------------------------------------------------------------------------------
 
@@ -275,8 +297,8 @@ tb_campos <- as.data.table(list(
 ))
 
 fwrite(tb_campos,
-  file = "dataset.campos.txt",
-  sep = "\t"
+       file = "dataset.campos.txt",
+       sep = "\t"
 )
 
 #------------------------------------------------------------------------------
