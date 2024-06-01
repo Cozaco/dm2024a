@@ -76,7 +76,7 @@ CA_catastrophe_base <- function( pinputexps, metodo )
 {
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 ) # linea fija
 
-  param_local$meta$script <- "/src/workflow-01/z521_CA_reparar_dataset.r"
+  param_local$meta$script <- "/src/workflow-01/521_CA_reparar_datase_missforest.r"
 
   # Opciones MachineLearning EstadisticaClasica Ninguno
   param_local$metodo <- metodo
@@ -387,6 +387,7 @@ wf_sept <- function( pnombrewf )
 
   DT_incorporar_dataset_competencia2024()
   CA_catastrophe_base( metodo="MachineLearning")
+  CA_catastrophe_base( metodo="MissForest")
   FEintra_base()
   DR_drifting_base(metodo="rank_cero_fijo")
   FEhist_base()

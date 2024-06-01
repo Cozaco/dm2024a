@@ -214,8 +214,6 @@ Corregir_MissForest <- function(dataset) {
     "mrentabilidad"
   )
   
-  set.seed(100)
-  
   variables_to_input_NA <- dataset[,..to_impute_variables]
   
   imputed_data <- missForest(sampled_rows,
