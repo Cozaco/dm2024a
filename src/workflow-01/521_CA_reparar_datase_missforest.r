@@ -201,6 +201,10 @@ Corregir_MachineLearning <- function(dataset) {
 Corregir_MissForest <- function(dataset) {
   cat("inicio Corregir_MissForest()\n")
   
+  num_cores <- detectCores() - 1
+  cl <- makeCluster(num_cores)
+  registerDoParallel(cl)
+  
   to_impute_variables <- c(
     "ctrx_quarter",
     "mpasivos_margen",
@@ -223,6 +227,8 @@ Corregir_MissForest <- function(dataset) {
                              parallelize = "forests")
   
   dataset[, (to_impute_variables) := imputed_data$ximp]
+  
+  stopCluster(cl)
   
   cat("fin Corregir_MissForest()\n")
   
