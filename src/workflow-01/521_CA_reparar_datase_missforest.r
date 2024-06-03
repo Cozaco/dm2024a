@@ -219,7 +219,7 @@ Corregir_MissForest <- function(dataset) {
   
   variables_to_input_NA <- dataset[,..to_impute_variables]
   
-  imputed_data <- missForest(sampled_rows,
+  imputed_data <- missForest(variables_to_input_NA,
                              verbose = TRUE,
                              maxiter = 10,
                              ntree = 100,
@@ -251,7 +251,9 @@ dataset <- fread(envg$PARAM$dataset)
 cat( "Finalizada lectura del dataset\n" )
 
 # tmobile_app se daño a partir de 202010
-dataset[, tmobile_app := NULL]
+if ("tmobile_app" %in% names(dataset)){
+  dataset[, tmobile_app := NULL]
+}
 
 
 GrabarOutput()
