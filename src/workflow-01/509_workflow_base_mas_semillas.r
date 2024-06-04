@@ -76,7 +76,7 @@ CA_catastrophe_base <- function( pinputexps, metodo )
 {
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 ) # linea fija
 
-  param_local$meta$script <- "/src/workflow-01/521_CA_reparar_datase_missforest.r"
+  param_local$meta$script <- "../buckets/b1/expw/CA-0005/521_CA_reparar_dataset_todo0toNA.r"
 
   # Opciones MachineLearning EstadisticaClasica Ninguno
   param_local$metodo <- metodo
@@ -362,8 +362,8 @@ ZZ_final_base9 <- function( pinputexps )
   param_local$train$gan0 <-  -3000
   param_local$train$meseta <- 2001
   
-  param_local$kaggle$envios_desde <-  10000L
-  param_local$kaggle$envios_hasta <- 12000L
+  param_local$kaggle$envios_desde <-  9000L
+  param_local$kaggle$envios_hasta <- 11000L
   param_local$kaggle$envios_salto <-   500L
   param_local$kaggle$competition <- "itba-data-mining-2024-a"
   param_local$kaggle$rango_submit <-  6:10
@@ -387,7 +387,7 @@ wf_sept <- function( pnombrewf )
   param_local <- exp_wf_init( pnombrewf ) # linea fija
 
   DT_incorporar_dataset_competencia2024()
-  CA_catastrophe_base( metodo="MachineLearning")
+  CA_catastrophe_base( metodo="Corregir0_a_NA")
   CA_catastrophe_base( metodo="MissForest")
   FEintra_base()
   DR_drifting_base(metodo="rank_cero_fijo")

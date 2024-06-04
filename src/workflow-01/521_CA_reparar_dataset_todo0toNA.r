@@ -195,6 +195,15 @@ Corregir_MachineLearning <- function(dataset) {
   cat( "fin Corregir_MachineLearning()\n")
 }
 #------------------------------------------------------------------------------
+
+# Nueva función para convertir ceros en NA
+Corregir_CerosNA <- function(dataset) {
+  cat( "inicio Corregir_CerosNA()\n")
+  dataset[dataset == 0] <- NA
+  cat( "fin Corregir_CerosNA()\n")
+}
+
+
 #------------------------------------------------------------------------------
 # Aqui empieza el programa
 cat( "z521_CA_reparar_dataset.r  START\n")
@@ -224,6 +233,7 @@ switch( envg$PARAM$metodo,
   "MachineLearning"     = Corregir_MachineLearning(dataset),
   "EstadisticaClasica"  = Corregir_EstadisticaClasica(dataset),
   "Ninguno"             = cat("No se aplica ninguna correccion.\n"),
+  "Corregir0_a_NA"      = Corregir_CerosNA(dataset)
 )
 
 
