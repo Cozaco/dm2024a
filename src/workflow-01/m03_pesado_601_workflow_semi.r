@@ -301,7 +301,7 @@ TS_strategy_base9 <- function( pinputexps )
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
-  param_local$train$undersampling <- 0.75
+  param_local$train$undersampling <- 0.2
   param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
 
   return( exp_correr_script( param_local ) ) # linea fija
@@ -462,7 +462,7 @@ wf_semillerio9 <- function( pnombrewf )
   CA_catastrophe_base( metodo="MachineLearning")
   CA_catastrophe_base( metodo="MissForest")
   FEintra_base()
-  DR_drifting_base(metodo="rank_cero_fijo")
+  DR_drifting_base(metodo="ninguno")
   FEhist_base()
   FErf_attributes_base()
   CN_canaritos_asesinos_base(ratio=0.95, desvio=0)
