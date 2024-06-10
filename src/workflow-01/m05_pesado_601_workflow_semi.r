@@ -131,6 +131,7 @@ FEhist_base <- function( pinputexps)
   param_local$lag1 <- TRUE
   param_local$lag2 <- TRUE
   param_local$lag3 <- TRUE
+  param_local$lag6 <- TRUE
 
   # no me engraso las manos con las tendencias
   param_local$Tendencias1$run <- TRUE  # FALSE, no corre nada de lo que sigue
@@ -143,14 +144,14 @@ FEhist_base <- function( pinputexps)
   param_local$Tendencias1$ratiomax <- TRUE
 
   # no me engraso las manos con las tendencias de segundo orden
-  param_local$Tendencias2$run <- FALSE
+  param_local$Tendencias2$run <- TRUE
   param_local$Tendencias2$ventana <- 12
-  param_local$Tendencias2$tendencia <- FALSE
-  param_local$Tendencias2$minimo <- FALSE
-  param_local$Tendencias2$maximo <- FALSE
-  param_local$Tendencias2$promedio <- FALSE
-  param_local$Tendencias2$ratioavg <- FALSE
-  param_local$Tendencias2$ratiomax <- FALSE
+  param_local$Tendencias2$tendencia <- TRUE
+  param_local$Tendencias2$minimo <- TRUE
+  param_local$Tendencias2$maximo <- TRUE
+  param_local$Tendencias2$promedio <- TRUE
+  param_local$Tendencias2$ratioavg <- TRUE
+  param_local$Tendencias2$ratiomax <- TRUE
 
   param_local$semilla <- NULL # no usa semilla, es deterministico
 
@@ -301,7 +302,7 @@ TS_strategy_base9 <- function( pinputexps )
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
-  param_local$train$undersampling <- 0.75
+  param_local$train$undersampling <- 0.50
   param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
 
   return( exp_correr_script( param_local ) ) # linea fija
@@ -352,7 +353,7 @@ HT_tuning_base <- function( pinputexps, bypass=FALSE)
     pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
     neg_bagging_fraction = 1.0, # 0.0 < neg_bagging_fraction <= 1.0
     is_unbalance = FALSE, #
-    scale_pos_weight = 417.0, # scale_pos_weight > 0.0
+    scale_pos_weight = c( 400, 500 ), # scale_pos_weight > 0.0
 
     drop_rate = 0.1, # 0.0 < neg_bagging_fraction <= 1.0
     max_drop = 50, # <=0 means no limit
@@ -465,7 +466,7 @@ wf_semillerio9 <- function( pnombrewf )
   DR_drifting_base(metodo="rank_cero_fijo")
   FEhist_base()
   FErf_attributes_base()
-  CN_canaritos_asesinos_base(ratio=0.95, desvio=0)
+  CN_canaritos_asesinos_base(ratio=0.95, desvio=-2)
 
   ts9 <- TS_strategy_base9()
   ht <- HT_tuning_base()
