@@ -132,6 +132,7 @@ FEhist_base <- function( pinputexps)
   param_local$lag2 <- TRUE
   param_local$lag3 <- TRUE
   param_local$lag6 <- TRUE
+  param_local$lag9 <- TRUE
 
   # no me engraso las manos con las tendencias
   param_local$Tendencias1$run <- TRUE  # FALSE, no corre nada de lo que sigue
@@ -269,7 +270,7 @@ TS_strategy_base7 <- function( pinputexps )
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
-  param_local$train$undersampling <- 0.2
+  param_local$train$undersampling <- 0.5
   param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
 
   return( exp_correr_script( param_local ) ) # linea fija
