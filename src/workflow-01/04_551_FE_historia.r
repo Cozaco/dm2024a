@@ -302,7 +302,7 @@ if (envg$PARAM$lag9) {
   cat( "Inicio lag9\n")
   # creo los campos lags de orden 9
   envg$OUTPUT$lag6$ncol_antes <- ncol(dataset)
-  dataset[, paste0(cols_lagueables, "_lag6") := shift(.SD, 9, NA, "lag"),
+  dataset[, paste0(cols_lagueables, "_lag9") := shift(.SD, 9, NA, "lag"),
           by = eval(envg$PARAM$dataset_metadata$entity_id),
           .SDcols = cols_lagueables
   ]
