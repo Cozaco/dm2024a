@@ -332,7 +332,7 @@ HT_tuning_base <- function( pinputexps, bypass=FALSE)
   #  los que tienen un vector,  son los que participan de la Bayesian Optimization
 
   param_local$lgb_param <- list(
-    boosting = "dart", # puede ir  dart  , ni pruebe random_forest
+    boosting = "gbdt", # puede ir  dart  , ni pruebe random_forest
     objective = "binary",
     metric = "custom",
     first_metric_only = TRUE,
@@ -352,7 +352,7 @@ HT_tuning_base <- function( pinputexps, bypass=FALSE)
     pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
     neg_bagging_fraction = 1.0, # 0.0 < neg_bagging_fraction <= 1.0
     is_unbalance = FALSE, #
-    scale_pos_weight = 1.0, # scale_pos_weight > 0.0
+    scale_pos_weight = 417.0, # scale_pos_weight > 0.0
 
     drop_rate = 0.1, # 0.0 < neg_bagging_fraction <= 1.0
     max_drop = 50, # <=0 means no limit
