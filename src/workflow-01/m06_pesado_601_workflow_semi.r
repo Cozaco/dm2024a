@@ -132,7 +132,6 @@ FEhist_base <- function( pinputexps)
   param_local$lag2 <- TRUE
   param_local$lag3 <- TRUE
   param_local$lag6 <- TRUE
-  param_local$lag9 <- TRUE
   
   # no me engraso las manos con las tendencias
   param_local$Tendencias1$run <- TRUE  # FALSE, no corre nada de lo que sigue
